@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Shivaay Casting Blog App</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;display=swap" rel="stylesheet" />
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<style>
+  /* Reset and base styles */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #f9fafb;
+    color: #1f2937;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  h1, h2 {
+    margin: 0;
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* Container */
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Welcome Screen */
+  #welcome-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-grow: 1;
+  }
+  #welcome-screen h1 {
+    font-size: 2.75rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+  #welcome-screen p {
+    font-size: 1.125rem;
+    margin-bottom: 48px;
+    color: #4b5563;
+  }
+  #welcome-button {
+    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    border: none;
+    padding: 14px 28px;
+    border-radius: 12px;
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 4px 14px rgba(124,58,237,0.4);
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+  }
+  #welcome-button:hover,
+  #welcome-button:focus {
+    box-shadow: 0 6px 20px rgba(124,58,237,0.6);
+    outline: none;
+    transform: translateY(-2px);
+  }
+
+  /* Posts Screen */
+  #posts-screen {
+    display: none;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  #posts-header {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-align: center;
+    color: #4b5563;
+  }
+  #posts-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    flex-grow: 1;
+    border-top: 1px solid #e5e7eb;
+  }
+  #posts-list li {
+    border-bottom: 1px solid #e5e7eb;
+  }
+  #posts-list button {
+    width: 100%;
+    background: #fff;
+    border: none;
+    padding: 20px 20px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: #1f2937;
+    border-radius: 0;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  #posts-list button:hover,
+  #posts-list button:focus {
+    background: #ede9fe;
+    outline: none;
+  }
+
+  /* Post Content Modal */
+  #post-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(31, 41, 55, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 10;
+  }
+  #post-modal-content {
+    background: #fff;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 16px;
+    padding: 28px 32px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+  }
+  #post-modal h2 {
+    margin-top: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #7c3aed;
+  }
+  #post-modal .post-body {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #374151;
+  }
+  #post-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: transparent;
+    border: none;
+    font-size: 28px;
+    line-height: 1;
+    color: #7c3aed;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  #post-modal-close:hover,
+  #post-modal-close:focus {
+    color: #4c1d95;
+    outline: none;
+  }
+
+  /* Loading Indicator */
+  #loading-indicator {
+    display: none;
+    margin: 24px auto;
+    width: 48px;
+    height: 48px;
+    border: 5px solid #e5e7eb;
+    border-top: 5px solid #7c3aed;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .container {
+      padding: 24px 16px 32px;
+    }
+    #welcome-screen h1 {
+      font-size: 2rem;
+    }
+    #posts-header {
+      font-size: 1.25rem;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- Welcome Screen -->
+  <section id="welcome-screen" aria-label="Welcome Page">
+    <h1>Welcome to Shivaay Casting</h1>
+    <p>Your gateway to all the latest posts.</p>
+    <button id="welcome-button" aria-label="View Posts">View Posts</button>
+  </section>
+
+  <!-- Posts Screen -->
+  <section id="posts-screen" aria-label="Posts Page" tabindex="0">
+    <header id="posts-header" aria-live="polite">Latest Posts</header>
+    <div id="loading-indicator" role="status" aria-live="polite" aria-busy="true" aria-label="Loading posts"></div>
+    <ul id="posts-list" role="list"></ul>
+  </section>
+</div>
+
+<!-- Post Content Modal -->
+<div id="post-modal" role="dialog" aria-modal="true" aria-labelledby="post-modal-title" tabindex="-1">
+  <div id="post-modal-content">
+    <button id="post-modal-close" aria-label="Close post detail">&times;</button>
+    <h2 id="post-modal-title"></h2>
+    <article class="post-body"></article>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const welcomeScreen = document.getElementById('welcome-screen');
+    const welcomeButton = document.getElementById('welcome-button');
+    const postsScreen = document.getElementById('posts-screen');
+    const postsList = document.getElementById('posts-list');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const postModal = document.getElementById('post-modal');
+    const postModalTitle = document.getElementById('post-modal-title');
+    const postModalBody = postModal.querySelector('.post-body');
+    const postModalClose = document.getElementById('post-modal-close');
+
+    // Blogger JSON feed URL for your blog
+    const BLOGGER_FEED_URL = 'https://shivaaycasting.blogspot.com/feeds/posts/default?alt=json&max-results=20';
+
+    // Show Posts Screen
+    function showPostsScreen() {
+      welcomeScreen.style.display = 'none';
+      postsScreen.style.display = 'flex';
+      postsScreen.focus();
+      loadPosts();
+    }
+
+    // Load posts from Blogger API
+    async function loadPosts() {
+      postsList.innerHTML = '';
+      loadingIndicator.style.display = 'block';
+
+      try {
+        const response = await fetch(BLOGGER_FEED_URL);
+        if (!response.ok) throw new Error('Network response was not OK');
+
+        const data = await response.json();
+        const entries = data.feed.entry;
+
+        if (!entries || entries.length === 0) {
+          postsList.innerHTML = '<li>No posts found.</li>';
+          return;
+        }
+
+        entries.forEach(entry => {
+          const title = entry.title.$t;
+          const contentHtml = (entry.content && entry.content.$t) || (entry.summary && entry.summary.$t) || '';
+          
+          const li = document.createElement('li');
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.innerText = title;
+          btn.setAttribute('aria-label', `Read post titled ${title}`);
+          btn.addEventListener('click', () => openPostModal(title, contentHtml));
+          li.appendChild(btn);
+          postsList.appendChild(li);
+        });
+      } catch (error) {
+        console.error('Failed to load posts:', error);
+        postsList.innerHTML = '<li>Error loading posts. Please try again later.</li>';
+      } finally {
+        loadingIndicator.style.display = 'none';
+      }
+    }
+
+    // Open modal to show post details
+    function openPostModal(title, contentHtml) {
+      postModalTitle.textContent = title;
+      postModalBody.innerHTML = contentHtml;
+      postModal.style.display = 'flex';
+      postModal.setAttribute('tabindex', '0');
+      postModal.focus();
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close post modal
+    function closePostModal() {
+      postModal.style.display = 'none';
+      document.body.style.overflow = '';
+      postsScreen.focus();
+    }
+
+    welcomeButton.addEventListener('click', showPostsScreen);
+    postModalClose.addEventListener('click', closePostModal);
+
+    postModal.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closePostModal();
+      }
+    });
+    postModal.addEventListener('click', (e) => {
+      if (e.target === postModal) {
+        closePostModal();
+      }
+    });
+  })();
+</script>
+</body>
+</html>
+
